@@ -296,7 +296,7 @@ do_build_payload([{Key, Value} | Params], Payload) ->
                body   = Body,
                image  = Image,
                key    = LocKey} ->
-      Json = {case Body of
+      Json = case Body of
                 none -> [];
                 Body -> [{<<"body">>, unicode:characters_to_binary(Body)}]
               end ++ case Action of
@@ -313,13 +313,13 @@ do_build_payload([{Key, Value} | Params], Payload) ->
                 [{<<"loc-key">>, unicode:characters_to_binary(LocKey)},
                  {<<"loc-args">>,
                     lists:map(fun unicode:characters_to_binary/1, Args)}
-                ]},
+                ],
       do_build_payload(Params, [{atom_to_binary(Key, utf8), Json} | Payload]);
     _ ->
       do_build_payload(Params, Payload)
   end;
 do_build_payload([], Payload) ->
-  {Payload}.
+  Payload.
 
 -spec send_payload(tuple(), binary(), non_neg_integer(), binary(), binary(), integer()) ->
   ok | {error, term()}.
