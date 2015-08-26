@@ -112,6 +112,10 @@ ssl_opts(Connection) ->
     case Connection#apns_connection.cert_password of
       undefined -> [];
       Password -> [{password, Password}]
+    end ++
+    case Connection#apns_connection.tls_versions of
+      undefined -> [];
+      TLSVersions -> [{versions, TLSVersions}]
     end,
   [{mode, binary} | Opts].
 
@@ -375,7 +379,7 @@ parse_status(_) -> unknown.
 %
 build_frame(MsgId, Expiry, BinToken, Payload, Priority) ->
   PayloadLength = erlang:size(Payload),
-  <<1:8, 32:16/big, BinToken/binary, 
+  <<1:8, 32:16/big, BinToken/binary,
     2:8, PayloadLength:16/big, Payload/binary,
     3:8, 4:16/big, MsgId/binary,
     4:8, 4:16/big, Expiry:4/big-unsigned-integer-unit:8,
